@@ -27,6 +27,7 @@ output = {}
 #external_stylesheets = ['gui-style.css']
 
 app = dash.Dash(__name__,static_folder='assets')
+server = app.server
 
 app.layout = html.Div([
         

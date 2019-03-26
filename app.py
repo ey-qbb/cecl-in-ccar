@@ -12,7 +12,7 @@ import dash_html_components as html
 from dash.dependencies import Input, Output, State
 import plotly.tools as tls
 import plotly.plotly as py
-import waterfall_chart
+#import waterfall_chart
 
 #tls.set_credentials_file(username='griv1012', api_key='T7cd1fUn2qwcQ8dSRHhP')
 

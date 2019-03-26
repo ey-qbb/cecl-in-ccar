@@ -16,7 +16,7 @@ from statsmodels.formula.api import ols
 from statsmodels.tsa.arima_model import ARIMA
 import plotly.plotly as py
 import plotly.graph_objs as go
-import plotly_express as px
+#import plotly_express as px
 from plotly import tools
 
 

@@ -10,13 +10,11 @@ import pandas as pds
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 import numpy as np
-#import waterfall_chart
 from statsmodels.formula.api import ols
 #from statsmodels.tsa.arima_model import ARMA
 from statsmodels.tsa.arima_model import ARIMA
 import plotly.plotly as py
 import plotly.graph_objs as go
-#import plotly_express as px
 from plotly import tools
 
 
@@ -700,21 +698,48 @@ def provision_calc(result):
 
     return result
 
-#
-#def waterfall_plot(result):
-#    hid = []
-#    hid.append(result['provision'][0])
-#    hid.append(result['provision'][0])
-#    for i in range(1,len(result['provision'])):
-#        hid.append(hid[i]+result['provision'][i])
-#    delta = []
-#    delta = result['provision']
-#    delta[0]=0
-#    
-#    tmp = {'base':hid,'delta':delta}
-#                                                       
-#    
-#    return fig
+
+def waterfall_plotly(result):
+    
+    base = [0 for x in range(len(result['provision'])+1)]   
+    pos = [0 for x in range(len(result['provision'])+1)]  
+    neg = [0 for x in range(len(result['provision'])+1)]  
+    anchor = [0 for x in range(len(result['provision'])+1)]    
+
+    for i in range(len(result['provision'])):
+        if i==0:
+            anchor[i] = result['provision'][i]
+            base[i] = result['provision'][i]
+        else: 
+            if result['provision'][i]<0:
+                neg[i] = result['provision'][i]
+                base[i] = base[i-1]+neg[i-1]+pos[i-1]
+            else:
+                pos[i] = result['provision'][i]
+                base[i] = base[i-1]+neg[i-1]+pos[i-1]
+    ix = len(result['provision'])   
+    anchor[ix] = base[ix-1]+neg[ix-1]+pos[ix-1]
+                
+    fig = go.Figure()
+    fig.add_bar(x=result['date'],y=anchor,marker={'color':'#747480'})
+    fig.add_bar(x=result['date'],y=base,marker={'opacity':0})
+    fig.add_bar(x=result['date'],y=pos,marker={'color':'#2DB757'})
+    fig.add_bar(x=result['date'],y=neg,marker={'color':'#FF4136'})
+    
+    fig['layout'].update(width=800,margin={'t':0})
+    fig['layout'].update({
+        'plot_bgcolor':'rgba(0,0,0,0)',
+        'paper_bgcolor':'rgba(0,0,0,0)',
+        'showlegend':False
+        })    
+    
+    fig['layout'].update(barmode='stack')  
+    fig['layout']['yaxis1'].update(title='Provision ($m)')
+    fig['layout']['xaxis1'].update(title='Quarters')
+    
+    fig.layout.template = 'plotly_dark'                                                    
+    
+    return fig
     
 
 #def provision_plot(result):
